@@ -1,11 +1,11 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const { name, version, token, clientId, authorId } = require("./config.json");
+const { name, version, token, clientId, ownerId } = require("./config.json");
 const { Client, Intents, Collection, Interaction } = require("discord.js");
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS]});
-client.name = name; client.version = version;
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]});
+client.name = name; client.version = version; client.id = clientId;
 
 const eventsPath = path.join(__dirname, "events");
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".js"));
@@ -54,19 +54,8 @@ for (const file of eventFiles) {
 	if (event.once) {
 		client.once(event.name, (...args) => event.execute(...args));
 	} else {
-		console.log(event);
 		client.on(event.name, (...args) => event.execute(client, ...args));
 	}
 }
-
-
-client.on("messageCreate", (message) => {
-	console.log("IRRA!");
-	
-	if (message.content.startsWith(".")) {
-		message.reply("Ah... Por quê tudo é tão triste?");
-	}
-});
-
 
 client.login(token);
