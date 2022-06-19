@@ -18,7 +18,7 @@ module.exports = {
 				.setDescription("Mensagem a ser enviada")
 				.setRequired(true)),
 	
-	restriction: ["authorOnly"],
+	restriction: ["ownerOnly"],
 	
 	async execute(interaction) {
 		const options = interaction.options._hoistedOptions;

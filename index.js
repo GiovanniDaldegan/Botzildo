@@ -15,29 +15,6 @@ const commandsPath = path.join(__dirname, "slashCommands");
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".js"));
 
 
-const projectsPath = "./projects.json";
-
-function resetProjects() {
-	fs.writeFile(projectsPath, "{}", (error) => {
-		if (error)
-			console.log(error);
-	});
-}
-
-if (!fs.existsSync(projectsPath)) resetProjects();
-
-const projects = require(projectsPath);
-
-function addProject(newProject) {
-	projects.assign(newProject);
-	fs.writeFile(projectsPath, JSON.stringify(projects, null, "\t"));
-}
-
-function archiveProject(project) {
-	console.log(projects.values());
-}
-
-
 // Listing commands
 for (const file of commandFiles) {
 	const filePath = path.join(commandsPath, file);

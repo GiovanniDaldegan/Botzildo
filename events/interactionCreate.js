@@ -1,4 +1,4 @@
-const { authorId } = require("../config.json");
+const { ownerId } = require("../config.json");
 
 module.exports = {
 	name: "interactionCreate",
@@ -11,7 +11,7 @@ module.exports = {
 
 		if (!command) return;
 
-		if (command.restriction.includes("authorOnly") && interaction.user.id !== authorId) {
+		if (command.restriction.includes("ownerOnly") && interaction.user.id !== ownerId) {
 			interaction.reply({ content: "Ops, você não tem permissão para usar esse comando :|", ephemeral: true });
 			return;
 		}
