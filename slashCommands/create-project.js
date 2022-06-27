@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const projectManager = require("../modules/project-manager.js")
+const { addProject, projectsIds, projects } = require("../modules/project-manager.js")
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -18,21 +19,36 @@ module.exports = {
 		.addUserOption(user =>
 			user
 				.setName("representante")
-				.setDescription("O membro do clube que vai ter permissão para administrar o projeto")),
+				.setDescription("O membro do clube que vai ter permissão para administrar o projeto")
+		),
 
 	restriction: ["ownerOnly"],
 
-	async execute(interaction) {
+	async execute(client, interaction) {
+		if (interaction.channelId !== projectsIds.channel) {
+			await interaction.reply({ content: "Esse não é o canal para a criação de projetos. Use esse comando no \"geral\" da categoria de projetos", ephemeral: true})
+			return;
+		}
+		
 		const options = interaction.options._hoistedOptions;
-		newProject = {
+
+		// console.log(interaction);
+
+		const newProject = {
 			"name": options[0].value,
 			"description": options[1].value,
-			"representative": options[2].value,
-			"status": "active"
+			"representative": options[2] ? [options[2].user.username, options[2].user.id] : null,
+			"status": true,
+			"participants": {}
 		};
-		await interaction.reply(`Novo projeto criado!\n\n**Nome**: ${newProject.name}\n**Descrição**: ${newProject.description}`);
 
-		// projetctManager.addProject(newProject);
-		projectManager.addProject(newProject);
+		if (Object.keys(projects).includes(newProject.name)) {
+			await interaction.reply({ content: "Ops, esse projeto já existe no arquivo. Esse comando foi invalidado", ephemeral: true})
+			return;
+		}
+
+		addProject(client, newProject, interaction);
+
+		await interaction.reply(`Novo projeto criado!\n\n**Nome**: ${newProject.name}\n**Descrição**: ${newProject.description}`);
 	}
-}
+};

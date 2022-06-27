@@ -7,7 +7,8 @@ module.exports = {
 
 	restriction: [],
 
-	async execute(interaction) {
-		await interaction.reply(`Pong! ${Math.abs(Date.now() - interaction.createdTimestamp)} ms`);
+	async execute(client, interaction) {
+		const sent = await interaction.reply({ content: "Pingando", fetchReply: true});
+		interaction.editReply(`Pong! ${sent.createdTimestamp - interaction.createdTimestamp} ms`);
 	}
 };
